@@ -13,7 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="23dp"
         android:text="PUMPED"
-        android:textSize="50sp"
+        android:textSize="49sp"
         android:textStyle="bold" />
 
     <TextView
