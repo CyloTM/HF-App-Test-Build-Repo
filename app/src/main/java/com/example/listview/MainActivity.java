@@ -1,0 +1,257 @@
+package com.example.listview;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyInterface {
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    Toolbar toolbar;
+    FragmentTransaction fragmentTransaction;
+    FragmentManager fragmentManager;
+    Fragment fragment;
+    FrameLayout frameLayout;
+    ListView listView;
+    View view;
+    int count;
+
+
+    private TextView textView;
+    private EditText editText;
+    private Button btn1;
+    private Button btn2;
+
+    @Override
+    public void lockDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    @Override
+    public void unlockDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+//    private Switch aSwitch;
+
+//    //Save
+//    public static final String Shared_Pref = "sharedPrefs";
+//    public static final String Text = "text";
+//    public static final String Switch1 = "switch1";
+//
+//    //Load
+//    private String text;
+//    private boolean switchOnOff;
+
+
+
+    String[] workoutsRoutines = {"Upper Body", "Lower body","Upper Body2", "Lower body2","Upper Body3", "Lower body3"};
+    int[] workoutsBackgrounds = {R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground,R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground,R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground};
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        listView = findViewById(R.id.listview);
+        CustomAdapter customAdapter = new CustomAdapter();
+        listView.setAdapter(customAdapter);
+        view = findViewById(R.id.mainActivity2);
+//        view.bringToFront();
+
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        frameLayout = findViewById(R.id.frameLayout);
+        navigationView.bringToFront();
+        navigationView.setNavigationItemSelectedListener(this);
+        toolbar= findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setNavigationIcon(R.drawable.ic_android_black_24dp);
+        drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
+        //Data Sotrage
+
+        textView = findViewById(R.id.text2);
+        editText = findViewById(R.id.text);
+//        aSwitch = findViewById(R.id.switc);
+
+//
+//        btn1.setOnClickListener(v -> openDialog());
+//
+//        btn1.setOnClickListener(v -> textView.setText(editText.getText().toString()));
+//
+//        btn2.setOnClickListener(v -> saveData());
+        /*listView.setOnItemClickListener((parent, view, i, id) -> {
+            Intent intent =  new Intent(getApplicationContext(),listdata.class);
+            intent.putExtra("name", workoutsRoutines[i]);
+            intent.putExtra("image", workoutsBackgrounds[i]);
+            Toast.makeText(MainActivity.this,"succ",Toast.LENGTH_SHORT).show();
+            startActivity(intent);
+        });*/
+
+        toolbar.setNavigationOnClickListener(v -> {
+
+            drawerLayout.openDrawer(GravityCompat.START);
+            if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+                onBackPressed();
+            }
+
+            if(fragment!=null){
+                count = fragmentManager.getBackStackEntryCount();
+                for (int i = 0; i<count;i++){
+                    fragmentManager.popBackStack();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction().remove(fragment);
+                fragmentTransaction.commit();
+                frameLayout.setClickable(false);
+
+            }
+            toolbar.setTitle(R.string.app_name);
+            toolbar.setNavigationIcon(R.drawable.ic_android_black_24dp);
+        });
+
+//        loadData();
+//        updateData();
+
+    }
+    public void openDialog(){
+        UserNameDialog userNameDialog = new UserNameDialog();
+        userNameDialog.show(getSupportFragmentManager(), "userNameDialog");
+    }
+
+//    public void saveData(){
+//        SharedPreferences sharedPreferences = getSharedPreferences(Shared_Pref, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString(Text, textView.getText().toString());
+//        editor.putBoolean(Switch1, aSwitch.isChecked());
+//
+//        editor.apply();
+//        Toast.makeText(MainActivity.this,"Data Saved",Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void loadData(){
+//        SharedPreferences sharedPreferences = getSharedPreferences(Shared_Pref, MODE_PRIVATE);
+//        text = sharedPreferences.getString(Text,"");
+//        switchOnOff = sharedPreferences.getBoolean(Switch1, false);
+//
+//    }
+//
+//    public void updateData(){
+//        textView.setText(text);
+//        aSwitch.setChecked(switchOnOff);
+//    }
+
+
+    @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }else super.onBackPressed();
+        count = fragmentManager.getBackStackEntryCount();
+        for (int i = 0; i<count;i++){
+            fragmentManager.popBackStack();
+        }
+        toolbar.setNavigationIcon(R.drawable.ic_android_black_24dp);
+        frameLayout.setClickable(false);
+    }
+
+//    @Override
+//    public void applyText(String username) {
+//    }
+
+    private class CustomAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return workoutsRoutines.length;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View convertView, ViewGroup parent) {
+            View view1 = getLayoutInflater().inflate(R.layout.rowdata, null);
+
+            TextView name = view1.findViewById((R.id.workouts));
+            ImageView image = view1.findViewById((R.id.background));
+
+            name.setText(workoutsRoutines[i]);
+            image.setImageResource(workoutsBackgrounds[i]);
+
+            view1.setOnClickListener(v ->{
+                    Intent intent =  new Intent(getApplicationContext(),listdata.class);
+                    //listdata list = new listdata();
+                    //list.
+                    intent.putExtra("name", workoutsRoutines[i]);
+                    startActivity(intent);
+                    Toast.makeText(MainActivity.this,workoutsRoutines[i],Toast.LENGTH_SHORT).show();});
+
+            return view1;
+
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        frameLayout.bringToFront();
+        frameLayout.setClickable(true);
+        switch(item.getItemId())
+        {
+            case R.id.nav_profile:
+                fragment = new profileFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction().replace(R.id.frameLayout, fragment).addToBackStack(null);
+                fragmentTransaction.commit();
+//                fragmentTransaction.add(R.id.profileFragment, new profileFragment());
+                toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
+                toolbar.setTitle(item.getTitle());
+                break;
+
+            case R.id.nav_custom_workouts:
+                fragment = new customWorkoutFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction().replace(R.id.frameLayout, new customWorkoutFragment()).addToBackStack(null);
+                fragmentTransaction.commit();
+                toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
+                toolbar.setTitle(item.getTitle());
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+}
+
