@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,19 +60,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //    private Switch aSwitch;
 
-//    //Save
-//    public static final String Shared_Pref = "sharedPrefs";
-//    public static final String Text = "text";
+    //Save
+    public static final String Shared_Pref = "sharedPrefs";
+    //    public static final String Text = "text";
 //    public static final String Switch1 = "switch1";
 //
 //    //Load
 //    private String text;
 //    private boolean switchOnOff;
+    private int mWorkoutsCompleted;
+
+    private TextView mTxtVwWorkoutsComplete;
+    public static final String mSPWorkOutsCompleted = "text5";
 
 
+    String[] workoutsRoutines = {"Upper Body", "Lower body", "Upper Body2", "Lower body2", "Upper Body3", "Lower body3"};
+    int[] workoutsBackgrounds = {R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground};
 
-    String[] workoutsRoutines = {"Upper Body", "Lower body","Upper Body2", "Lower body2","Upper Body3", "Lower body3"};
-    int[] workoutsBackgrounds = {R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground,R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground,R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground};
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
+        updateData();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         view = findViewById(R.id.mainActivity2);
 //        view.bringToFront();
 
+        mTxtVwWorkoutsComplete = findViewById(R.id.textView3);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -97,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         textView = findViewById(R.id.text2);
         editText = findViewById(R.id.text);
+
+
 //        aSwitch = findViewById(R.id.switc);
 
 //
@@ -122,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if(fragment!=null){
                 count = fragmentManager.getBackStackEntryCount();
-                for (int i = 0; i<count;i++){
+                for (int i = 0; i<count; i++){
                     fragmentManager.popBackStack();
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
@@ -136,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             toolbar.setNavigationIcon(R.drawable.ic_android_black_24dp);
         });
 
-//        loadData();
-//        updateData();
+        loadData();
+        updateData();
 
     }
     public void openDialog(){
@@ -167,18 +182,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        aSwitch.setChecked(switchOnOff);
 //    }
 
+    public void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Shared_Pref, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(mSPWorkOutsCompleted, mWorkoutsCompleted);
+        editor.apply();
+
+        Toast.makeText(MainActivity.this, "Workout Count Saved", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    public void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Shared_Pref, MODE_PRIVATE);
+        mWorkoutsCompleted = sharedPreferences.getInt(mSPWorkOutsCompleted, 0);
+    }
+
+    public void updateData() {
+//        Intent intent = getIntent();
+//        mTxtVwWorkoutsComplete.setText(intent.getStringExtra("WC"));
+        mTxtVwWorkoutsComplete.setText(String.valueOf(mWorkoutsCompleted));
+    }
+
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }else super.onBackPressed();
-        count = fragmentManager.getBackStackEntryCount();
-        for (int i = 0; i<count;i++){
+        } else super.onBackPressed();
+        if (fragment != null) {
+            count = fragmentManager.getBackStackEntryCount();
+        }
+        for (int i = 0; i < count; i++) {
             fragmentManager.popBackStack();
         }
         toolbar.setNavigationIcon(R.drawable.ic_android_black_24dp);
         frameLayout.setClickable(false);
+        saveData();
     }
 
 //    @Override

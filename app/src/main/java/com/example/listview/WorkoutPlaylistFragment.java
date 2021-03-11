@@ -1,6 +1,7 @@
 package com.example.listview;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.WHITE;
 
@@ -23,6 +26,7 @@ public class WorkoutPlaylistFragment extends Fragment{
 
     //Interface
     private MyInterface2 myInterface2;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -54,6 +58,11 @@ public class WorkoutPlaylistFragment extends Fragment{
     private long mTimeLeft = mStartTime;
 
     private View view;
+
+    //Shared Preferences
+    public static final String mSPWorkOutsCompleted = "text5";
+    private static int mWorkoutCompletedCount;
+    private boolean mWorkoutCompleted = false;
 
 
     @Override
@@ -129,6 +138,9 @@ public class WorkoutPlaylistFragment extends Fragment{
         mBtnSkip.setVisibility(View.VISIBLE);
         mBtnAddTime.setVisibility(View.VISIBLE);
         view.setBackgroundColor(BLUE);
+
+        //Shared Pref
+//        loadData();
     }
 
     private void updateCountDownText() {
@@ -180,20 +192,40 @@ public class WorkoutPlaylistFragment extends Fragment{
             mTxtVwExerciseReps.setText(mExerciseRepArray.get(i));
         }
 
-        if(i == mExerciseNameArray.size()){
+        if (i == mExerciseNameArray.size()) {
             pauseTimer();
             getActivity().getSupportFragmentManager().popBackStack();
+            mWorkoutCompleted = true;
+
         }
     }
+
+//    public void saveData(){
+//        SharedPreferences sharedPreferences = getActivity().getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt(mSPWorkOutsCompleted, mWorkoutCompletedCount);
+//        editor.apply();
+//
+//        Toast.makeText(getActivity(),"Workout Count Saved",Toast.LENGTH_SHORT).show();
+//        return;
+//    }
+//    public void loadData() {
+//        SharedPreferences sharedPreferences = getActivity().getPreferences(MODE_PRIVATE);
+//        mWorkoutCompletedCount = sharedPreferences.getInt(mSPWorkOutsCompleted,0);
+//    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         i = 0;
-        myInterface2.btnShow();
-        pauseTimer();
+        if (mWorkoutCompleted) {
+//            mWorkoutCompletedCount = mWorkoutCompletedCount+1;
+            mWorkoutCompleted = false;
+            myInterface2.btnShow();
+        }
+//        pauseTimer();
         resetTimer();
-
+//        saveData();
     }
 
 

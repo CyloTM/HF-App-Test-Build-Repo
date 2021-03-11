@@ -21,15 +21,25 @@
             layout="@layout/activity_main2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"/>
+            android:layout_below="@id/toolbar" />
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
-            tools:visibility="gone">
-        </FrameLayout>
+            tools:visibility="gone"></FrameLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="156dp"
+            android:layout_marginTop="213dp"
+            android:text="TextView"
+            android:textSize="40sp" />
     </RelativeLayout>
 
     <androidx.fragment.app.FragmentContainerView

@@ -1,6 +1,7 @@
 package com.example.listview;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -13,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.view.ViewGroup;
@@ -71,6 +73,14 @@ public class  listdata extends AppCompatActivity implements MyInterface2 {
 
     Button button;
 
+    //Save
+    public static final String Shared_Pref = "sharedPrefs";
+
+
+    private TextView mTxtVwWorkoutsComplete;
+    public static final String mSPWorkOutsCompleted = "text5";
+    private int mWorkoutsCompleted;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +90,7 @@ public class  listdata extends AppCompatActivity implements MyInterface2 {
         listView = findViewById(R.id.exersiceListview);
         Intent intent = getIntent();
         button = findViewById(R.id.playlist);
+        mTxtVwWorkoutsComplete = findViewById(R.id.textView4);
         eName.setText(intent.getStringExtra("name"));
 //        String name = eName.getText().toString();
 //        String name2 = "Upper Body";
@@ -123,24 +134,24 @@ public class  listdata extends AppCompatActivity implements MyInterface2 {
 //            }
         });
 
+
         //Array Adpter
         toolbar.setTitle(eName.getText());
         CustomAdapter customAdapter = new CustomAdapter();
         listView.setAdapter(customAdapter);
+        loadData();
+        updateData();
+        saveData();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        intent = new Intent(getApplicationContext(), MainActivity.class);
+        //listdata list = new listdata();
+        //list.
+        intent.putExtra("WC", String.valueOf(mWorkoutsCompleted));
     }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        saveData();
         count = fragmentManager.getBackStackEntryCount();
         for (int i = 0; i<count;i++){
             fragmentManager.popBackStack();
@@ -218,15 +229,33 @@ public class  listdata extends AppCompatActivity implements MyInterface2 {
             exercises.add(4,"Legs5");
             exercises.add(5,"Legs6");
 
-            exercisesReps.add(0,"1");
-            exercisesReps.add(0,"2");
-            exercisesReps.add(0,"3");
-            exercisesReps.add(0,"4");
-            exercisesReps.add(0,"5");
-            exercisesReps.add(0,"6");
+            exercisesReps.add(0, "1");
+            exercisesReps.add(0, "2");
+            exercisesReps.add(0, "3");
+            exercisesReps.add(0, "4");
+            exercisesReps.add(0, "5");
+            exercisesReps.add(0, "6");
         }
     }
 
+    public void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Shared_Pref, MODE_PRIVATE);
+        mWorkoutsCompleted = sharedPreferences.getInt(mSPWorkOutsCompleted, 0);
+    }
+
+    public void updateData() {
+        mTxtVwWorkoutsComplete.setText(String.valueOf(mWorkoutsCompleted));
+    }
+
+    public void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Shared_Pref, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(mSPWorkOutsCompleted, mWorkoutsCompleted);
+        editor.apply();
+
+        Toast.makeText(listdata.this, "Workout Count Saved", Toast.LENGTH_SHORT).show();
+        return;
+    }
 
     @Override
     protected void onDestroy() {
@@ -235,8 +264,19 @@ public class  listdata extends AppCompatActivity implements MyInterface2 {
     }
 
     @Override
-    public void btnShow(){
+    public void btnShow() {
+
+        mWorkoutsCompleted = mWorkoutsCompleted + 1;
+        saveData();
+        loadData();
+        updateData();
         button.setVisibility(View.VISIBLE);
+
+
+//
+//        mTxtVwWorkoutsComplete.setText(Integer.toString(mWorkoutsCompleted + 1));
     }
+
+
 
 }

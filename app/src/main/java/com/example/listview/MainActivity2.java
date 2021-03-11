@@ -3,6 +3,7 @@ package com.example.listview;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,12 @@ public class MainActivity2 extends AppCompatActivity {
     String[] workoutsRoutines = {"Upper Body", "Lower body","Upper Body2", "Lower body2","Upper Body3", "Lower body3"};
     int[] workoutsBackgrounds = {R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground,R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground,R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground};
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
 
         listView = findViewById(R.id.listview);
         MainActivity2.CustomAdapter customAdapter = new MainActivity2.CustomAdapter();
@@ -68,4 +71,6 @@ public class MainActivity2 extends AppCompatActivity {
         }
 
     }
+
+
 }

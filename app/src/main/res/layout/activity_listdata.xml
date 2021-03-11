@@ -39,9 +39,19 @@
         android:layout_marginBottom="125dp"
         android:text="Proceed" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="98dp"
+        android:layout_height="81dp"
+        android:text="TextView" />
+
     <FrameLayout
         android:id="@+id/frameLayout2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp">
+
+    </FrameLayout>
 
 </RelativeLayout>
