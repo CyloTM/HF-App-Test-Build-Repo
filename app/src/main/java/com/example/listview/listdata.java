@@ -33,14 +33,14 @@ public class  listdata extends AppCompatActivity implements MyInterface2 {
     public Exercise e;
 
 
-    //fragment
+    //Fragment
     FragmentTransaction fragmentTransaction;
     FragmentManager fragmentManager;
     Fragment fragment;
 
     FrameLayout frameLayout;
 
-    //List view Data
+    //List View Data
     private ArrayList<String> exercises = new ArrayList<>();
     private ArrayList<String> exercisesReps = new ArrayList<>();
     
